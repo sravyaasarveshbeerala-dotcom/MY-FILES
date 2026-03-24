@@ -1,0 +1,33 @@
+
+
+        import sailpoint.object.Identity;
+        import sailpoint.object.ProvisioningPlan;
+        import sailpoint.object.ProvisioningPlan.AccountRequest;
+        // log.error(" plan in workflow create Infor NNE" +identityName);
+
+        //need to check if any error in workflow for Ad account create
+        ProvisioningPlan planInfor = new ProvisioningPlan();
+        try {
+        log.error("starting inforCreateAccount :: " + identityName);
+        Identity newIdentity = context.getObjectByName(Identity.class, identityName);
+        log.error("identity :: " + newIdentity);
+        planInfor.setIdentity(newIdentity);
+        AccountRequest acctReq = new AccountRequest();
+
+        acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Create);
+        String crpId = newIdentity.getAttribute("corpID");
+        String corpIDUser = (crpId != null && crpId.contains("-")) ? crpId.substring(crpId.lastIndexOf("-") + 1) : crpId;
+        acctReq.setNativeIdentity(corpIDUser);
+        acctReq.setApplication("Infor");
+        planInfor.add(acctReq);
+        log.error("inforCreateAccount plan :: " + planInfor.toXml());
+
+        } catch (Exception e) {
+        // TODO: handle exception
+        log.error("Exception in creating Infor account in prehire :: " + e.getMessage());
+        }
+        log.error(" plan to create infor account in workflow prehire====== " +planInfor.toXml());
+        workflow.put("plan",planInfor);
+
+
+      
