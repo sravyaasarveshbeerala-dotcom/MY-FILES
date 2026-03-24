@@ -1,0 +1,60 @@
+import java.text.SimpleDateFormat;
+  import java.util.Calendar;
+  import java.util.Date;
+  import java.util.concurrent.TimeUnit;
+  import sailpoint.object.Identity;
+
+  //log.error("joiner");
+  String mamAccountGenerated = null;
+
+  // New identity has to exist for the workflow to trigger
+  if(!(newIdentity instanceof Identity)) {
+
+    return false;
+  }
+/*
+  if(getApplicationAccountStatus(newIdentity.getName(), "Active Directory Test")){
+    return false;
+  }
+   */
+  Date date;
+  String sDate=(String) newIdentity.getAttribute("startDate");
+  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+  log.error("startDate "+sDate);
+  Date date1=null;
+  if(sDate!=null){
+    date1=sdf.parse(sDate);
+  }
+  else{
+    return false;
+  }
+  //log.error("date1    "+date1);
+
+  Date dt=new Date();
+  Calendar c=Calendar.getInstance();
+  c.setTime(dt);
+  c.set(Calendar.MILLISECOND, 0);
+  c.set(Calendar.SECOND, 0);
+  c.set(Calendar.MINUTE, 0);
+  c.set(Calendar.HOUR_OF_DAY, 0);
+  dt=c.getTime();
+  String dt1=sdf.format(dt);
+  date=sdf.parse(dt1);
+
+  long diffInMillis = date.getTime() - date1.getTime();
+  long days = TimeUnit.MILLISECONDS.toDays(diffInMillis);
+  log.error("days: "+days);
+  log.error("Date: "+date);
+  mamAccountGenerated = (String) newIdentity.getAttribute("mamAccountGenerated");
+  
+  // check if the identity created for ITShop/ infor NNE(In scope)/ FTE and active
+  // if (getITShopStatus(newIdentity.getAttribute("usertype")) && !getInforAccountStatus(newIdentity.getName()) && date!=null && date1!=null && && ((date.equals(date1) || date1.before(date)))){    
+  if (!previousIdentity.isInactive() && date!=null && date1!=null && ((date.equals(date1) || days<=10))){    
+    if(mamAccountGenerated != null && mamAccountGenerated.equalsIgnoreCase("true") && !mamAccountGenerated.equalsIgnoreCase("ADActive")) {	
+      log.error("joiner triggered for the user "+	newIdentity.getName());		 
+      return true;
+    }
+   // return true;
+  }
+  return false;
