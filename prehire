@@ -1,0 +1,97 @@
+import sailpoint.object.Identity;
+  import java.text.SimpleDateFormat;
+  import java.util.Calendar;
+  import java.util.Date;
+  import java.util.concurrent.TimeUnit;
+  /* isAD link(not trigger)
+firstname,Lastname,dob and ssn not null
+termdate is past or diff(termdate and startdate)  grater than 10 days (not trigger)
+  */
+  String mamAccountGenerated = newIdentity != null? newIdentity.getAttribute("mamAccountGenerated") : "";
+  String userType = newIdentity != null? newIdentity.getAttribute("usertype") : "";
+ 
+  // New identity has to exist for the workflow to trigger
+  if(!(newIdentity instanceof Identity) || userType == null) {
+    log.error("newIdentity !identity : prehire");
+    return false;
+  }
+   boolean isValiduser  = (newIdentity.getFirstname() != null) && (newIdentity.getLastname() != null) && (newIdentity.getAttribute("ssn") != null) && (newIdentity.getAttribute("dob") != null);
+
+  //boolean isValiduser  = ((String)newIdentity.getFirstname() != null) && ((String)newIdentity.getLastname() != null) && ((String)newIdentity.getAttribute("ssn"));
+  String termDate = newIdentity.getAttribute("terminationDate");
+  if(!isValiduser){
+    log.error("Prehire not triggered due to insufficient required attribute");
+    return false;
+  }
+  /*  if(hasApplicationLink(newIdentity.getName(), "Active Directory Test")){
+    log.error("Prehire not triggered as NH AD exists");
+    return false;
+  }*/
+
+
+  //Check the termdate and start date 
+  Date date;
+  String sDate=(String) newIdentity.getAttribute("startDate");
+  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+  //
+  log.error("startDate in prehire "+sDate);
+  //SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+  Date date1 = null;
+  if(sDate!=null){
+    date1=sdf.parse(sDate);
+  }
+  else{
+    return false;
+  }
+  //log.error("date1    "+date1);
+
+  Date dt=new Date();
+  Calendar c=Calendar.getInstance();
+  c.setTime(dt);
+  c.set(Calendar.MILLISECOND, 0);
+  c.set(Calendar.SECOND, 0);
+  c.set(Calendar.MINUTE, 0);
+  c.set(Calendar.HOUR_OF_DAY, 0);
+  dt=c.getTime();
+  String dt1=sdf.format(dt);
+  date=sdf.parse(dt1);
+
+  //TermDate 
+  Date termDt = null;
+
+  if(termDate!=null){
+    termDt=sdf.parse(termDate);
+    long diffInMillis = termDt.getTime() - date.getTime();
+    long days = TimeUnit.MILLISECONDS.toDays(diffInMillis);
+    log.error("days: "+days);
+    if(termDt != null && (termDt.before(date) || days < 10)){
+      log.error("Prehire not triggered as termdate condition failed");
+      return false;
+    }
+  }
+
+  log.error("Date: "+date);
+  mamAccountGenerated = (String) newIdentity.getAttribute("mamAccountGenerated");
+
+
+  log.error("inside triggr rule prehire");
+
+
+  /* 
+  
+  if ( getApplicationAccountStatus(newIdentity.getName(), "Green Security")){     // check if the identity created infor NNE and active in GS
+
+    if(((null == mamAccountGenerated) || mamAccountGenerated.equalsIgnoreCase("false"))) {	
+      log.error("inside triggr rule prehire : true"); 
+      return true;
+    }else{
+
+      return false;
+    } 
+  }else*/ if((null == mamAccountGenerated) || mamAccountGenerated.equalsIgnoreCase("false")) {
+    log.error("inside triggr rule prehire :::: true");						  
+    return true;
+  }
+
+  return false;
