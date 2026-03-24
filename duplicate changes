@@ -1,0 +1,79 @@
+
+        import sailpoint.object.Identity;
+        import java.util.List;
+        import java.util.ArrayList;
+        import java.util.Iterator;
+        import java.util.Map;
+        import java.util.HashMap;
+
+        log.error("Prepare duplicate list in prehire***: ");
+
+        List duplicateUsers = new ArrayList();
+        HashMap formData = new HashMap();
+        Map dupUserMap = new HashMap();
+        QueryOptions ops = new QueryOptions();      
+
+        Identity newIdentity = context.getObjectByName(Identity.class, identityName);
+        if(null != newIdentity) {
+        String firstname = removeSpecialCharacters(newIdentity.getFirstname());
+        log.error("Identity Joiner event Firstname ------- "+firstname);
+
+        String lastname =removeSpecialCharacters(newIdentity.getLastname());
+        log.error("Identity Joiner event Firstname ------- "+lastname);
+
+        String userpersonID = (String)newIdentity.getAttribute("personID");
+
+        String dOB = (String)newIdentity.getAttribute("dob");
+        String ssnValue = (String)newIdentity.getAttribute("ssn");
+        String preferredName = (String)newIdentity.getAttribute("preferredName");
+        duplicateUsers = checkDupIdentity(identityName,firstname,preferredName,lastname,userpersonID,dOB,ssnValue);
+
+        log.warn("Results Map in Prepare List"+duplicateUsers);
+        Iterator dupuserItr = duplicateUsers.iterator();
+        while(dupuserItr.hasNext()) {
+        String dupUsername = 	(String) dupuserItr.next();      // duplicate identityname 
+        log.warn("Identity Name in Prepare List"+dupUsername);
+        Identity identityObject = context.getObjectByName(Identity.class, dupUsername);
+        if(null != identityObject) {
+        String personID = (String)identityObject.getAttribute("personID");
+
+        ops = new QueryOptions();
+        Filter filter1 = Filter.ignoreCase(Filter.eq("personID", personID));        
+        ops.add(filter1);
+        List identityList1 = context.getObjects(Identity.class, ops);
+
+        for(Identity idn : identityList1) {
+        if(idn.getName() != identityObject.getName()){
+
+        Map userDetails = new HashMap();
+        userDetails.put("personID", idn.getAttribute("personID") != null ? idn.getAttribute("personID") : "");
+        userDetails.put("displayName", idn.getDisplayName() != null ? idn.getDisplayName() : "");
+        userDetails.put("corpID", idn.getAttribute("corpID") != null ? idn.getAttribute("corpID") : "");
+        userDetails.put("userType", idn.getAttribute("usertype") != null ? idn.getAttribute("usertype") : "");
+        userDetails.put("status", idn.isInactive() ? "Inactive" : "Active");
+
+        dupUserMap.put(idn.getName(),userDetails);
+
+        }
+        }
+
+        Map userDetails = new HashMap();
+        userDetails.put("personID", identityObject.getAttribute("personID") != null ? identityObject.getAttribute("personID") : "");
+        userDetails.put("displayName", identityObject.getDisplayName() != null ? identityObject.getDisplayName() : "");
+        userDetails.put("corpID", identityObject.getAttribute("corpID") != null ? identityObject.getAttribute("corpID") : "");
+        userDetails.put("userType", identityObject.getAttribute("usertype") != null ? identityObject.getAttribute("usertype") : "");
+        userDetails.put("status", identityObject.isInactive() ? "Inactive" : "Active");
+
+        dupUserMap.put(identityObject.getName(),userDetails);
+        //context.decache(identityObject);
+        }
+        }
+        Util.flushIterator(dupuserItr);
+        }
+
+        //context.decache(newIdentity);
+        formData.put("dupUserMap",dupUserMap);
+        log.warn("Form Data map before return"+formData.toString());
+        return formData;
+
+      
