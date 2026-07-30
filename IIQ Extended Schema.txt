@@ -1,0 +1,11 @@
+IIQ Extended Schema
+Make sure all hbm files are updated:
+D:\Apache_Tomcat\apache-tomcat-9.0.111\webapps\identityiq\WEB-INF\classes\sailpoint\object
+
+execute add_identityiq_extensions.sqlserver
+Updated ObjectConfig is imported for
+	Application
+	ManagedAttributes
+	Identity
+	Link
+	Bundle
