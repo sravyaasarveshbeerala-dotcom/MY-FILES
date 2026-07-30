@@ -1,0 +1,58 @@
+Good evening, 
+
+ 
+
+Need to outline some requirements surrounding approvals for the onboarding and change-boarding service now forms.
+
+ 
+
+If the person submitting the request is the manager of the user listed in "requested for", or they are in ad group list below,  then no approval is necessary, they can submit the onboarding/change boarding form without delay.
+
+ 
+
+If they do not meet these criteria, then an approval should be raised to the manager of the user listed in “Requested for”.
+
+Approvals are not necessary in lower environments.
+
+PROD AD GROUP LIST:
+ONEIM_ITShop_BadgeOnly_NNE_GrpMgrs
+
+OneIM_ITShop_ConiferOffshoreContractor_GrpMgrs
+
+OneIM_ITShop_ConiferOnshoreContractor_GrpMgrs
+
+ONEIM_ITShop_Contractor_NNE_GrpMgrs
+
+OneIM_ITShop_DoctorsCare_GrpMgrs
+
+ONEIM_ITShop_EpicSupport_GrpMgrs
+
+ONEIM_ITShop_Global_GrpMgrs
+
+ONEIM_ITSHOP_Global_Non-Restricted_GrpMgrs
+
+ONEIM_ITShop_Institution_NNE_GrpMgrs
+
+ONEIM_ITShop_LNMC_GrpMgrs
+
+ONEIM_ITShop_NonManagers
+
+ONEIM_ITShop_OrthoPT_GrpMgrs
+
+ONEIM_ITShop_OSContractor_GrpMgrs
+
+ONEIM_ITShop_ProvidenceOSContractor_GrpMgrs
+
+ONEIM_ITShop_Providers_NNE_GrpMgrs
+
+ONEIM_ITShop_SCC_GrpMgrs
+
+ONEIM_ITShop_SSI_GrpMgrs
+
+ONEIM_ITShop_Students_NNE_GrpMgrs
+
+ONEIM_ITShop_Vendor_User_NNE_GrpMgrs
+
+ONEIM_ITShop_Volunteer_NNE_GrpMgrs
+
+ 
